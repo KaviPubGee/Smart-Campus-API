@@ -52,4 +52,22 @@ public class RoomResource {
                 .entity(room)
                 .build();
     }
+
+    /**
+     * Retrieves a specific room by its ID.
+     * @param roomId The room ID from the URL path.
+     * @return 200 OK if found, or 404 Not Found.
+     */
+    @GET
+    @Path("/{roomId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRoomById(@PathParam("roomId") String roomId) {
+        Room room = dataStore.getRoom(roomId);
+        if (room == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\": \"Room not found\"}")
+                    .build();
+        }
+        return Response.ok(room).build();
+    }
 }
