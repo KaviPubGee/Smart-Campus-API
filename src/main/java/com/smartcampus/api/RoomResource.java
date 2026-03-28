@@ -70,4 +70,31 @@ public class RoomResource {
         }
         return Response.ok(room).build();
     }
+
+    /**
+     * Deletes a specific room, provided it is empty of sensors.
+     * @param roomId The room ID to delete.
+     * @return 204 No Content if successful, 404 Not Found, or 409 Conflict.
+     */
+    @DELETE
+    @Path("/{roomId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteRoom(@PathParam("roomId") String roomId) {
+        Room room = dataStore.getRoom(roomId);
+        if (room == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\": \"Room not found\"}")
+                    .build();
+        }
+
+        // Business Logic Constraint: cannot delete room with active sensors
+        if (room.getSensorIds() != null && !room.getSensorIds().isEmpty()) {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("{\"error\": \"Cannot delete room. Active sensors are currently assigned to it.\"}")
+                    .build();
+        }
+
+        dataStore.removeRoom(roomId);
+        return Response.noContent().build();
+    }
 }
