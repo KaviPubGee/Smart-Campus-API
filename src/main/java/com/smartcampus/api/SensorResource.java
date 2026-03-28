@@ -7,7 +7,10 @@ import com.smartcampus.models.Sensor;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Resource for managing Sensor entities across the campus.
@@ -60,5 +63,29 @@ public class SensorResource {
         return Response.status(Response.Status.CREATED)
                 .entity(sensor)
                 .build();
+    }
+
+    /**
+     * Retrieves sensors across the campus.
+     * If the "type" query parameter is provided (e.g., ?type=CO2), it returns only matching sensors.
+     * @param type The optional hardware category query string.
+     * @return 200 OK with the JSON array of matching hardware sensors.
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSensors(@QueryParam("type") String type) {
+        Collection<Sensor> allSensors = dataStore.getSensors().values();
+
+        // If no filter is applied, return everything
+        if (type == null || type.trim().isEmpty()) {
+            return Response.ok(allSensors).build();
+        }
+
+        // Apply stream filtering matching the provided type (case-insensitive)
+        List<Sensor> filtered = allSensors.stream()
+                .filter(sensor -> sensor.getType() != null && sensor.getType().equalsIgnoreCase(type))
+                .collect(Collectors.toList());
+
+        return Response.ok(filtered).build();
     }
 }
