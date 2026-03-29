@@ -1,6 +1,13 @@
 package com.smartcampus.api;
 
 import com.smartcampus.data.DataStore;
+import com.smartcampus.models.SensorReading;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Sub-resource handling telemetric readings for a specific assigned Sensor.
@@ -22,8 +29,48 @@ public class SensorReadingResource {
         this.sensorId = sensorId;
     }
 
-    /* 
-     * Historical telemetry operations (GET / POST) will be fully 
-     * materialized into this Sub-Resource during Day 13.
+    /**
+     * Retrieves all historical telemetry readings for this specific sensor.
+     * @return 200 OK with a JSON array of readings.
      */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getReadings() {
+        List<SensorReading> readings = dataStore.getSensorReadings(sensorId);
+        return Response.ok(readings).build();
+    }
+
+    /**
+     * Appends a new telemetry reading event to this sensor's history.
+     * @param reading The JSON object containing the timestamp and metric value.
+     * @return 201 Created with the persisted reading.
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addReading(SensorReading reading) {
+        // Validate Parent Sensor Existence first
+        if (dataStore.getSensor(sensorId) == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\": \"Target parent sensor does not exist.\"}")
+                    .build();
+        }
+
+        // Generate ID and default timestamp if missing
+        if (reading.getId() == null || reading.getId().trim().isEmpty()) {
+            reading.setId(UUID.randomUUID().toString());
+        }
+        if (reading.getTimestamp() == 0) {
+            reading.setTimestamp(System.currentTimeMillis());
+        }
+
+        dataStore.addSensorReading(sensorId, reading);
+
+        // Note: The cross-resource state sync (updating the parent Sensor's currentValue)
+        // will be implemented in Day 14 as per the structural coursework plan.
+
+        return Response.status(Response.Status.CREATED)
+                .entity(reading)
+                .build();
+    }
 }
