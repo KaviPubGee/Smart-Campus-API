@@ -88,4 +88,19 @@ public class SensorResource {
 
         return Response.ok(filtered).build();
     }
+
+    /**
+     * Sub-Resource Locator Method. 
+     * Delegates all traffic hitting `/sensors/{sensorId}/readings` natively downstream 
+     * to the dynamically constructed `SensorReadingResource` sub-controller.
+     * 
+     * @param sensorId The ID of the sensor extracted from the URL.
+     * @return The isolated Sub-Resource class instance handling this specific sensor.
+     */
+    @Path("/{sensorId}/readings")
+    public SensorReadingResource getSensorReadingResource(@PathParam("sensorId") String sensorId) {
+        // Technically, you could add logic here to return 404 if the sensorId doesn't exist, 
+        // but delegating structural flow handles encapsulation naturally.
+        return new SensorReadingResource(sensorId);
+    }
 }
