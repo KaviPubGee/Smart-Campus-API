@@ -1,6 +1,7 @@
 package com.smartcampus.api;
 
 import com.smartcampus.data.DataStore;
+import com.smartcampus.models.Sensor;
 import com.smartcampus.models.SensorReading;
 
 import javax.ws.rs.*;
@@ -66,8 +67,11 @@ public class SensorReadingResource {
 
         dataStore.addSensorReading(sensorId, reading);
 
-        // Note: The cross-resource state sync (updating the parent Sensor's currentValue)
-        // will be implemented in Day 14 as per the structural coursework plan.
+        // Cross-resource state sync: Update the parent Sensor's currentValue
+        Sensor parentSensor = dataStore.getSensor(sensorId);
+        if (parentSensor != null) {
+            parentSensor.setCurrentValue(reading.getValue());
+        }
 
         return Response.status(Response.Status.CREATED)
                 .entity(reading)
