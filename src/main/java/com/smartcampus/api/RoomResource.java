@@ -89,9 +89,7 @@ public class RoomResource {
 
         // Business Logic Constraint: cannot delete room with active sensors
         if (room.getSensorIds() != null && !room.getSensorIds().isEmpty()) {
-            return Response.status(Response.Status.CONFLICT)
-                    .entity("{\"error\": \"Cannot delete room. Active sensors are currently assigned to it.\"}")
-                    .build();
+            throw new com.smartcampus.exceptions.RoomNotEmptyException("Cannot delete room. Active sensors are currently assigned to it.");
         }
 
         dataStore.removeRoom(roomId);
