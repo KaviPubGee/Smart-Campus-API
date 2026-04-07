@@ -3,6 +3,7 @@ package com.smartcampus.config;
 import com.smartcampus.api.DiscoveryResource;
 import com.smartcampus.api.RoomResource;
 import com.smartcampus.api.SensorResource;
+import com.smartcampus.exceptions.RoomNotEmptyExceptionMapper;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -22,6 +23,10 @@ public class SmartCampusApplication extends Application {
         resources.add(DiscoveryResource.class);
         resources.add(RoomResource.class);
         resources.add(SensorResource.class);
+        
+        // Register Exception Mappers
+        resources.add(RoomNotEmptyExceptionMapper.class);
+        
         return resources;
     }
 }
