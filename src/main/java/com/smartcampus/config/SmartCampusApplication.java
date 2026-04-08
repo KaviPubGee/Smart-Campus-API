@@ -5,6 +5,8 @@ import com.smartcampus.api.RoomResource;
 import com.smartcampus.api.SensorResource;
 import com.smartcampus.exceptions.LinkedResourceNotFoundExceptionMapper;
 import com.smartcampus.exceptions.RoomNotEmptyExceptionMapper;
+import com.smartcampus.exceptions.SensorUnavailableExceptionMapper;
+import com.smartcampus.exceptions.GenericExceptionMapper;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -28,6 +30,8 @@ public class SmartCampusApplication extends Application {
         // Register Exception Mappers
         resources.add(RoomNotEmptyExceptionMapper.class);
         resources.add(LinkedResourceNotFoundExceptionMapper.class);
+        resources.add(SensorUnavailableExceptionMapper.class);
+        resources.add(GenericExceptionMapper.class);
         
         return resources;
     }

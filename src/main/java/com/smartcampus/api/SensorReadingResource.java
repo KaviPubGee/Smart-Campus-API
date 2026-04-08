@@ -51,10 +51,16 @@ public class SensorReadingResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addReading(SensorReading reading) {
         // Validate Parent Sensor Existence first
-        if (dataStore.getSensor(sensorId) == null) {
+        Sensor parentSensor = dataStore.getSensor(sensorId);
+        if (parentSensor == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("{\"error\": \"Target parent sensor does not exist.\"}")
                     .build();
+        }
+
+        // State Constraint (403): Sensor must not be in MAINTENANCE
+        if ("MAINTENANCE".equalsIgnoreCase(parentSensor.getStatus()) || "OFFLINE".equalsIgnoreCase(parentSensor.getStatus())) {
+            throw new com.smartcampus.exceptions.SensorUnavailableException("Sensor hardware is currently disabled for maintenance.");
         }
 
         // Generate ID and default timestamp if missing
@@ -68,10 +74,7 @@ public class SensorReadingResource {
         dataStore.addSensorReading(sensorId, reading);
 
         // Cross-resource state sync: Update the parent Sensor's currentValue
-        Sensor parentSensor = dataStore.getSensor(sensorId);
-        if (parentSensor != null) {
-            parentSensor.setCurrentValue(reading.getValue());
-        }
+        parentSensor.setCurrentValue(reading.getValue());
 
         return Response.status(Response.Status.CREATED)
                 .entity(reading)
