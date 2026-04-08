@@ -3,6 +3,15 @@
 **Module:** 5COSC022W Client-Server Architectures  
 **Description:** A custom JAX-RS RESTful web API for managing university campus rooms and sensors without external database coupling.
 
+## Quick Start & Execution
+
+1. **Requirements:** Java 17+ and Maven.
+2. **Build the Project:** Run `mvn clean compile` in the root directory.
+3. **Run the Server:** Execute the `Main.java` class to instantiate the embedded Grizzly HTTP server. The discovery endpoint is exposed natively at `http://localhost:8080/api/v1`.
+4. **Data Volatility:** As per the strict coursework design constraints, **no external database** is utilized. All application state is securely mapped to a centralized, thread-safe `ConcurrentHashMap` Singleton. Terminating the Grizzly server cleanly wipes all telemetry data.
+
+***
+
 ## Coursework Report: Conceptual Questions
 
 ### Part 1: Service Architecture & Setup
@@ -77,4 +86,4 @@ Armed with this exact, highly-specific structural fingerprint, a malicious actor
 
 Embedding localized `System.out.println()` manual loggers structurally inside every single API business method completely violates the DRY (Don't Repeat Yourself) principle. It painfully duplicates boilerplate logging code violently across hundreds of disconnected files. If an enterprise team later formally decides to switch their logging infrastructure from standard console outputs over to a dedicated, highly asynchronous enterprise pipeline (like `log4j` feeding streaming metrics into a Splunk or Elastic/ELK stack), engineers would predictably be forced to open, hunt through, and manually refactor thousands of individual controller operations risking typos and merge conflicts.
 
-By conversely utilizing JAX-RS `ContainerRequestFilter` and `ContainerResponseFilter` interfaces, we natively achieve "Aspect-Oriented Programming" (AOP). The infrastructural logging concern is entirely stripped totally out of the business domain controllers (`SensorResource`, `RoomResource`) and cleanly fully centralized into one single, global interceptor file. The filter dynamically intercepts 100% of the inbound traffic seamlessly before it ever reaches the core controllers, and universally universally audits the outbound HTTP statuses after the processing logically finishes. This guarantees completely comprehensive, tamper-proof audit trails for cyber security monitoring, significantly organically reduces enterprise code bloat, and provides a single, mathematically pure scalable file to surgically modify if reporting requirements dynamically evolve in the future.
+By conversely utilizing JAX-RS `ContainerRequestFilter` and `ContainerResponseFilter` interfaces, we natively achieve "Aspect-Oriented Programming" (AOP). The infrastructural logging concern is entirely stripped totally out of the business domain controllers (`SensorResource`, `RoomResource`) and cleanly fully centralized into one single, global interceptor file. The filter dynamically intercepts 100% of the inbound traffic seamlessly before it ever reaches the core controllers, and universally audits the outbound HTTP statuses after the processing logically finishes. This guarantees completely comprehensive, tamper-proof audit trails for cyber security monitoring, significantly organically reduces enterprise code bloat, and provides a single, mathematically pure scalable file to surgically modify if reporting requirements dynamically evolve in the future.
