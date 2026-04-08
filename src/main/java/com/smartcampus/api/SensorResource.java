@@ -39,10 +39,8 @@ public class SensorResource {
         // 2. Cross-Resource Integrity Validation
         Room parentRoom = dataStore.getRoom(sensor.getRoomId());
         if (parentRoom == null) {
-            // Will be abstracted by LinkedResourceNotFoundException in Day 16
-            return Response.status(422) 
-                    .entity("{\"error\": \"The specified room does not exist in the system.\"}")
-                    .build();
+            throw new com.smartcampus.exceptions.LinkedResourceNotFoundException(
+                    "The specified room does not exist in the system.");
         }
 
         // 3. ID Generation & Persisting
