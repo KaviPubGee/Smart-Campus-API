@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-shared-configuration>
+    <!--
+        This file contains additional NetBeans configuration.
+        NetBeans reads this on project open to auto-configure:
+        - Java EE 8 Web Profile
+        - Apache Tomcat 9 as the target server
+    -->
+    <properties xmlns="http://www.netbeans.org/ns/maven-properties-data/1">
+        <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>1.8-web</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>
+        <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>Tomcat</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>
+    </properties>
+</project-shared-configuration>

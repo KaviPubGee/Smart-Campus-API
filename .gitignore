@@ -1,33 +1,61 @@
-HELP.md
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven
 target/
+dependency-reduced-pom.xml
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+buildNumber.properties
+.mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+# IDEs
+.idea/
 *.iml
+*.iws
 *.ipr
 
-### NetBeans ###
+# Eclipse
+.classpath
+.project
+.settings/
+.metadata/
+bin/
+
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+nbbuild/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+# Note: Keep nb-configuration.xml tracked if you want server mapping to persist across user checkouts, but usually private settings are ignored. 
+# In this coursework case we PREFER nb-configuration.xml to be tracked, so removing it from ignore.
+!nb-configuration.xml
 
-### VS Code ###
+# VS Code
 .vscode/
+
+# OS specific
+.DS_Store
+Thumbs.db

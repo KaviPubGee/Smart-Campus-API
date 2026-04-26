@@ -1,14 +1,77 @@
 # Smart Campus Sensor & Room Management API
 
 **Module:** 5COSC022W Client-Server Architectures  
-**Description:** A custom JAX-RS RESTful web API for managing university campus rooms and sensors without external database coupling.
+**Description:** A JAX-RS RESTful web API for managing university campus rooms and sensors without external database coupling. The application acts as a central telemetry hub allowing clients to register logical rooms, provision hardware sensors, and submit ongoing streaming metrics (e.g. CO2, Temperature).
 
-## Quick Start & Execution
+## Deployment & Execution Guides
 
-1. **Requirements:** Java 17+ and Maven.
-2. **Build the Project:** Run `mvn clean compile` in the root directory.
-3. **Run the Server:** Execute the `Main.java` class to instantiate the embedded Grizzly HTTP server. The discovery endpoint is exposed natively at `http://localhost:8080/api/v1`.
-4. **Data Volatility:** As per the strict coursework design constraints, **no external database** is utilized. All application state is securely mapped to a centralized, thread-safe `ConcurrentHashMap` Singleton. Terminating the Grizzly server cleanly wipes all telemetry data.
+The project has been converted to a standard Java EE 8 WAR application and can be built and deployed in three flexible ways.
+
+**Prerequisites:**
+- JDK 17 installed and set as your system's `JAVA_HOME`.
+- Maven installed and added to your system path.
+
+### Option 1: Quick Start (Terminal Jetty Server)
+The quickest way to run the application for development without any external servers.
+1. Open a terminal in the project root directory.
+2. Run the command: `mvn jetty:run`
+3. The server will start instantly and host the API at: `http://localhost:8080/api/v1`
+
+### Option 2: Manual Tomcat WAR Deployment
+To build a standard web archive for a production-like standalone Tomcat deployment:
+1. Open a terminal in the project root directory.
+2. Run the command: `mvn clean package`
+3. Navigate to the `target/` directory and locate `ROOT.war`.
+4. Copy `ROOT.war` into your external Tomcat `webapps` folder (`tomcat/webapps/`).
+5. Run Tomcat (`bin/startup.bat` for Windows or `bin/startup.sh` for macOS/Linux).
+6. The API is now available at: `http://localhost:8080/api/v1`
+
+### Option 3: NetBeans Web Profile (Auto Tomcat)
+If you prefer an IDE-driven workflow:
+1. Open NetBeans and select **File > Open Project** and choose the `SmartCampusAPI` folder.
+2. The project is pre-configured via `nb-configuration.xml` to be recognised as a Java EE 8 Web Application.
+3. In the Services tab, ensure an Apache Tomcat 9 instance is added.
+4. Right-click the project, select **Clean and Build**, then click **Run**.
+5. NetBeans will automatically deploy the application and launch your browser directly to: `http://localhost:8080/api/v1`
+
+***
+
+## Sample API Interactions (cURL)
+
+Below are five standard cURL commands demonstrating structural workflows with the API.
+
+**1. Create a logical Room**
+```bash
+curl -X POST http://localhost:8080/api/v1/rooms \
+     -H "Content-Type: application/json" \
+     -d "{\"name\": \"Main Lecture Hall\", \"capacity\": 300, \"floor\": 1}"
+```
+
+**2. List all available Rooms**
+```bash
+curl -X GET http://localhost:8080/api/v1/rooms
+```
+
+**3. Register a new Hardware Sensor targeting a specific Room**
+*(Note: Replace `<ROOM_ID>` with the ID generated from command #1).*
+```bash
+curl -X POST http://localhost:8080/api/v1/sensors \
+     -H "Content-Type: application/json" \
+     -d "{\"roomId\": \"<ROOM_ID>\", \"name\": \"CO2 Monitor\", \"type\": \"CO2\", \"unit\": \"ppm\"}"
+```
+
+**4. Filter active Sensors by specific hardware type**
+```bash
+curl -X GET "http://localhost:8080/api/v1/sensors?type=CO2"
+```
+
+**5. Post a new Telemetry metric Reading to a specific Sensor**
+*(Note: Replace `<SENSOR_ID>` with the ID generated from command #3).*
+```bash
+curl -X POST http://localhost:8080/api/v1/sensors/<SENSOR_ID>/readings \
+     -H "Content-Type: application/json" \
+     -d "{\"value\": 412.5}"
+```
 
 ***
 
